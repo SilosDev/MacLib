@@ -5,6 +5,8 @@
 	by Singularity
         https://v3rmillion.net/member.php?action=profile&uid=947830
         Singularity#5490
+
+	+ Key System added (key = 2026)
 --]]
 
 repeat wait() until game:GetService("Players").LocalPlayer
@@ -2213,9 +2215,6 @@ local library = {
                                 end
                                 if betweenOpenInterval(keycode.Value, 48, 57) then -- 0-9
                                     local name = rawget({ Zero = 0, One = 1, Two = 2, Three = 3, Four = 4, Five = 5, Six = 6, Seven = 7, Eight = 8, Nine = 9 }, keycode.Name)
-                                    -- if shift then
-                                    --     name = rawget({ "=", "!", '"', "#", "¤", "%", "&", "/", "(", ")" }, name + 1)
-                                    -- end
                                     text = text .. name
                                     updateTextBox()
                                 end
@@ -2520,4 +2519,192 @@ do -- window history zindex
     end)
 end
 
-return library
+-- ======================== KEY SYSTEM + EXAMPLE ========================
+
+local CORRECT_KEY = "2026"
+
+local KeyWindow = library.new({
+    text = "Key System",
+    size = Vector2.new(300, 150),
+    position = UDim2.new(0.5, -150, 0.5, -75),
+})
+KeyWindow.open()
+
+local KeyTab = KeyWindow.new({
+    text = "Unlock",
+})
+
+local InfoLabel = KeyTab.new("label", {
+    text = "Enter the key to continue:",
+})
+
+-- Custom styled TextBox (same style as MacLib)
+local inputContainer = Instance.new("Frame")
+inputContainer.Name = "KeyInput"
+inputContainer.BackgroundTransparency = 1
+inputContainer.Size = UDim2.new(0, 250, 0, 28)
+inputContainer.Parent = KeyTab.self:FindFirstChild("Items")
+
+local outer = Instance.new("ImageLabel")
+outer.Name = "Outer"
+outer.BackgroundTransparency = 1
+outer.Size = UDim2.new(1, 0, 1, 0)
+outer.Image = "rbxassetid://3570695787"
+outer.ImageColor3 = Color3.fromRGB(59, 59, 68)
+outer.ScaleType = Enum.ScaleType.Slice
+outer.SliceCenter = Rect.new(100, 100, 100, 100)
+outer.SliceScale = 0.05
+outer.Parent = inputContainer
+
+local inner = Instance.new("ImageLabel")
+inner.Name = "Inner"
+inner.BackgroundTransparency = 1
+inner.Position = UDim2.new(0, 2, 0, 2)
+inner.Size = UDim2.new(1, -4, 1, -4)
+inner.Image = "rbxassetid://3570695787"
+inner.ImageColor3 = Color3.fromRGB(32, 59, 97)
+inner.ScaleType = Enum.ScaleType.Slice
+inner.SliceCenter = Rect.new(100, 100, 100, 100)
+inner.SliceScale = 0.05
+inner.Parent = outer
+
+local keyBox = Instance.new("TextBox")
+keyBox.BackgroundTransparency = 1
+keyBox.Size = UDim2.new(1, -12, 1, 0)
+keyBox.Position = UDim2.new(0, 6, 0, 0)
+keyBox.Font = Enum.Font.Code
+keyBox.Text = ""
+keyBox.PlaceholderText = "Enter key..."
+keyBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+keyBox.PlaceholderColor3 = Color3.fromRGB(178, 178, 178)
+keyBox.TextSize = 14
+keyBox.TextXAlignment = Enum.TextXAlignment.Left
+keyBox.ClearTextOnFocus = false
+keyBox.Parent = inner
+
+local StatusLabel = KeyTab.new("label", {
+    text = "",
+    color = Color3.fromRGB(255, 80, 80),
+})
+
+local UnlockButton = KeyTab.new("button", {
+    text = "Unlock",
+})
+
+local function tryUnlock()
+    if keyBox.Text == CORRECT_KEY then
+        StatusLabel.setText("Correct! Loading...")
+        StatusLabel.setColor(Color3.fromRGB(80, 255, 120))
+        
+        task.wait(0.4)
+        
+        -- Close & remove key window
+        KeyWindow.close()
+        for _, v in pairs(ScreenGui:GetChildren()) do
+            if v.Name == "Main" and v:FindFirstChild("Title") and v.Title.Text == "Key System" then
+                v:Destroy()
+            end
+        end
+        
+        -- ==================== MACLIB EXAMPLE ====================
+        local Window = library.new({
+            text = "MacLib Example",
+            size = Vector2.new(400, 300),
+        })
+        Window.open()
+
+        local MainTab = Window.new({
+            text = "Main",
+        })
+
+        -- Label
+        local Label = MainTab.new("label", {
+            text = "Welcome to MacLib!",
+            color = Color3.new(1, 1, 1),
+        })
+
+        -- Button
+        local Button = MainTab.new("button", {
+            text = "Click me",
+        })
+        Button.event:Connect(function()
+            print("Button clicked!")
+        end)
+
+        -- Switch
+        local Switch = MainTab.new("switch", {
+            text = "Enable feature",
+        })
+        Switch.set(false)
+        Switch.event:Connect(function(value)
+            print("Switch:", value)
+        end)
+
+        -- Slider
+        local Slider = MainTab.new("slider", {
+            text = "Speed",
+            color = Color3.fromRGB(41, 74, 122),
+            min = 0,
+            max = 100,
+            value = 50,
+            rounding = 1,
+        })
+        Slider.event:Connect(function(value)
+            print("Speed:", value)
+        end)
+        Slider.set(75)
+
+        -- Color Picker
+        local ColorPicker = MainTab.new("color", {
+            text = "Color",
+            color = Color3.fromRGB(0, 170, 255),
+        })
+        ColorPicker.event:Connect(function(color)
+            print("Color changed:", color)
+        end)
+
+        -- Dropdown
+        local Dropdown = MainTab.new("dropdown", {
+            text = "Select option",
+        })
+        Dropdown.new("Option 1")
+        Dropdown.new("Option 2")
+        Dropdown.new("Option 3")
+        Dropdown.new("Option 4")
+        Dropdown.event:Connect(function(name)
+            print("Selected:", name)
+        end)
+
+        -- Folder
+        local Folder = MainTab.new("folder", {
+            text = "Extra",
+        })
+        local FolderButton = Folder.new("button", {
+            text = "Folder Button",
+        })
+        FolderButton.event:Connect(function()
+            print("Folder button clicked!")
+        end)
+        local FolderSwitch = Folder.new("switch", {
+            text = "Folder Switch",
+        })
+        FolderSwitch.event:Connect(function(value)
+            print("Folder switch:", value)
+        end)
+        Folder.open()
+        
+    else
+        StatusLabel.setText("Wrong key!")
+        StatusLabel.setColor(Color3.fromRGB(255, 80, 80))
+        keyBox.Text = ""
+        keyBox.PlaceholderText = "Wrong key..."
+    end
+end
+
+UnlockButton.event:Connect(tryUnlock)
+
+keyBox.FocusLost:Connect(function(enterPressed)
+    if enterPressed then
+        tryUnlock()
+    end
+end)
